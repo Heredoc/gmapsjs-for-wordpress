@@ -1475,25 +1475,29 @@ GMaps.prototype.setStyle = function(mapTypeId){
 (function($){
    $(document).ready(function(){
     $('.gmaps-js').each(function() {
-      var mapid = $(this).attr('id');
+      var mapid     = $(this).attr('id');
+      var latitude  = $(this).data("latitude");
+      var longitude = $(this).data("longitude");
       map = new GMaps({
         div: '#'+mapid,
-        lat: 0,
-        lng: 0
+        lat: latitude,
+        lng: longitude
       });
-      GMaps.geocode({
-          address:$(this).data("address"),
-          callback: function(results, status){
-            if(status=='OK'){
-              var latlng = results[0].geometry.location;
-              map.setCenter(latlng.lat(), latlng.lng());
-              map.addMarker({
-                lat: latlng.lat(),
-                lng: latlng.lng()
-              });
-            }
-          }
+      map.setCenter(latitude, longitude);
+      map.addMarker({
+        lat: latitude,
+        lng: longitude
+      });
+      if($(this).data("route") != "none") {
+        map.drawRoute({
+          origin: map.getCenter(),
+          destination: [-12.090814532191756, -77.02271108990476],
+          travelMode: $(this).data("route") ,
+          strokeColor: '#131540',
+          strokeOpacity: 0.6,
+          strokeWeight: 6
         });
+      }
     });
    });
 })(jQuery);
