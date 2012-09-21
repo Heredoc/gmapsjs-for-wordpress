@@ -11,20 +11,29 @@ Version: 0.1
 define('GMAPSJS_DB', '0.02');
 /*hook area*/
 add_action('admin_menu', 'gmapsjs_hook_menu');
-add_action('plugins_loaded', 'gmapsjs_admin_init');
+add_action('plugins_loaded', 'gmapsjs_admin_load');
+add_action('admin_init', 'gmapsjs_admin_init');
 add_action('wp_enqueue_scripts', 'gmapsjs_enqueue_scripts');
 function gmapsjs_hook_menu() {
 	add_options_page('Gmaps.js for wordpress', 'Gmaps settings', 'manage_options', 'wp-gmapsjs', 'gmapsjs_settings_page');
 }
 function gmapsjs_settings_page() {
-	include("views/dashboard.php");
+	include("admin/views/dashboard.php");
 }
-function gmapsjs_admin_init() {
+function gmapsjs_meta_box($post) {
+
+}
+function gmapsjs_admin_load() {
 	$db_ver = get_option('gmapsjs_db_ver');
 	if($db_ver != GMAPSJS_DB || $db_ver == null) 
 		gmapsjs_setup();
-
-
+}
+function gmapsjs_admin_init() {
+	if (!isset($_POST['gmapsjs_se123curity']) || ! wp_verify_nonce( $_POST['gmapsjs_se123curity'], 'dashboard.php') )
+	// die($_POST['gmapsjs_se123curity'].basename(__FILE__));
+		return;
+	else
+		include('admin/save_post-data.php');
 }
 function gmapsjs_setup() {
 	 global $wpdb;
